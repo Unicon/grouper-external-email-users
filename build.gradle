@@ -1,0 +1,87 @@
+apply plugin: 'java'
+
+version = '1.0.0'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile ('edu.internet2.middleware.grouper:grouper:2.3.0') {
+      transitive = false
+    }
+    compile 'edu.internet2.middleware.grouper:subject:2.3.0'
+    compile 'org.slf4j:slf4j-api:1.6.2'
+
+    //Needed for hooks to compile
+    compile 'org.hibernate:hibernate-core:3.6.0.Final'
+}
+
+
+task copyDocker(type: Copy) {
+    from 'src/test/docker-compose/'
+    into 'build/docker-compose/'
+}
+
+task copyJspToDocker(type: Copy) {
+    dependsOn copyDocker
+
+    from 'src/main/webapp/'
+    into 'build/docker-compose/grouper/grouper.ui/webapp'
+}
+
+task copyJavaToDocker(type: Copy) {
+    dependsOn copyDocker
+
+    from 'src/main/server-side-compiled/java/'
+    into 'build/docker-compose/grouper/grouper.ui/java/src/'
+}
+
+task addLib(type: Copy) {
+    dependsOn jar
+
+    from 'build/libs/'
+    into 'build/docker-compose/grouper/grouper.ui/java/lib/'
+}
+
+task buildGrouper(type:Exec) {
+    dependsOn copyDocker, copyJspToDocker, copyJavaToDocker, addLib
+
+    doFirst {
+        logger.lifecycle("Building the initial images may take a long time. Have plenty of bandwidth.")
+    }
+
+    workingDir 'build/docker-compose'
+    commandLine 'docker-compose', 'build'
+}
+
+task runGrouper(type:Exec) {
+  dependsOn buildGrouper
+
+  workingDir 'build/docker-compose'
+  commandLine 'docker-compose', 'up', '-d'
+}
+
+task stopGrouper(type:Exec) {
+    workingDir 'build/docker-compose'
+    commandLine 'docker-compose', 'kill'
+}
+
+task removeGrouper(type:Exec) {
+    dependsOn stopGrouper
+
+    workingDir 'build/docker-compose'
+    commandLine 'docker-compose', 'rm', '-f'
+}
+
+task logs(type:Exec) {
+    workingDir 'build/docker-compose'
+    commandLine 'docker-compose', 'logs'
+}
+
+clean {
+    dependsOn removeGrouper
+}
+
