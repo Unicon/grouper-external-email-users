@@ -372,7 +372,7 @@ $Id: sources.example.xml,v 1.8 2009-08-11 20:18:09 mchyzer Exp $
                 <param-name>sql</param-name>
                 <param-value>
                     select
-                    mail, trim(concat(givenName, ' ', surname, '(', mail, ')')) as displayName
+                    mail, trim(concat(givenName, ' ', surname, ' (', mail, ')')) as displayName
                     from
                     custom_external_users
                     where
@@ -392,7 +392,7 @@ $Id: sources.example.xml,v 1.8 2009-08-11 20:18:09 mchyzer Exp $
                 <param-name>sql</param-name>
                 <param-value>
                     select
-                    mail, trim(concat(givenName, ' ', surname, '(', mail, ')')) as displayName
+                    mail, trim(concat(givenName, ' ', surname, ' (', mail, ')')) as displayName
                     from
                     custom_external_users
                     where

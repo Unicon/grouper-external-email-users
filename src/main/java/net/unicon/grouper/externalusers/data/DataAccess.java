@@ -6,10 +6,27 @@ import edu.internet2.middleware.grouper.util.GrouperUtil;
 import java.util.List;
 
 /**
- * Created by jgasper on 10/31/16.
+ * Data Access for External Users
+ *
+ * Expects a table in the Grouper schema/database with the following definition:
+ *  CREATE TABLE custom_external_users (mail VARCHAR(100) NOT NULL,
+ *  givenName VARCHAR(40),
+ *  surname VARCHAR(40),
+ *  created_on BIGINT NOT NULL,
+ *  created_by VARCHAR(40) NOT NULL,
+ *  updated_on BIGINT,
+ *  updated_by VARCHAR(40),
+ *  PRIMARY KEY (mail));
+ *
+ *  (please alter as needed)
  */
 public class DataAccess {
-    /* Data layer interaction code */
+
+    /**
+     * Checks to see if an external users already exists
+     * @param mail the email adddress
+     * @return true if found, otherwise false.
+     */
     public static boolean externalUserExists(final String mail) {
         try {
             Boolean result = (Boolean)(HibernateSession.callbackHibernateSession(GrouperTransactionType.READ_WRITE_NEW, AuditControl.WILL_NOT_AUDIT, new HibernateHandler() {
@@ -31,6 +48,13 @@ public class DataAccess {
         }
     }
 
+    /**
+     * Updates an existing user
+     * @param mail
+     * @param givenName
+     * @param surname
+     * @param subjectId the updating user's subject Id
+     */
     public static void updateExternalUser(final String mail, final String givenName, final String surname, final String subjectId) {
         try {
             HibernateSession.callbackHibernateSession(GrouperTransactionType.READ_WRITE_NEW, AuditControl.WILL_NOT_AUDIT, new HibernateHandler() {
@@ -50,6 +74,13 @@ public class DataAccess {
         }
     }
 
+    /**
+     * Adds a new user
+     * @param mail
+     * @param givenName
+     * @param surname
+     * @param subjectId the adding user's subject Id
+     */
     public static void createExternalUser(final String mail, final String givenName, final String surname, final String subjectId) {
         try {
             HibernateSession.callbackHibernateSession(GrouperTransactionType.READ_WRITE_NEW, AuditControl.WILL_NOT_AUDIT, new HibernateHandler() {

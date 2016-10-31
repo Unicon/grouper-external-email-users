@@ -2,17 +2,18 @@ package edu.internet2.middleware.grouper.grouperUi.serviceLogic;
 
 import edu.internet2.middleware.grouper.Group;
 import edu.internet2.middleware.grouper.GrouperSession;
-import edu.internet2.middleware.grouper.cfg.GrouperConfig;
+import edu.internet2.middleware.grouper.SubjectFinder;
 import edu.internet2.middleware.grouper.grouperUi.beans.json.GuiResponseJs;
 import edu.internet2.middleware.grouper.grouperUi.beans.json.GuiScreenAction;
 import edu.internet2.middleware.grouper.grouperUi.beans.json.GuiScreenAction.GuiMessageType;
 import edu.internet2.middleware.grouper.privs.AccessPrivilege;
-import edu.internet2.middleware.grouper.SubjectFinder;
 import edu.internet2.middleware.grouper.ui.GrouperUiFilter;
 import edu.internet2.middleware.grouper.ui.util.GrouperUiUserData;
 import edu.internet2.middleware.grouper.userData.GrouperUserDataApi;
 import edu.internet2.middleware.subject.Subject;
 import net.unicon.grouper.externalusers.data.DataAccess;
+import net.unicon.grouper.externalusers.utils.ExternalUsersUtils;
+import org.apache.commons.validator.EmailValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +25,7 @@ public class UiV2GroupExternalUsers {
     private static final String MAIN_CONTENT_DIV_ID = "#grouperMainContentDivId";
 
     /**
-     * Custom form handling
+     * Displays the custom form
      */
     @SuppressWarnings("unchecked")
     public void add(final HttpServletRequest request, HttpServletResponse response) {
@@ -37,7 +38,7 @@ public class UiV2GroupExternalUsers {
                         GuiResponseJs.retrieveGuiResponseJs().addAction(GuiScreenAction.newMessage(GuiMessageType.error, "External users cannot be added to composite groups."));
                     }
 
-                    if (isActiveGroup(group.getName())) {
+                    if (ExternalUsersUtils.isActiveGroup(group.getName())) {
                         GuiResponseJs.retrieveGuiResponseJs().addAction(GuiScreenAction.newInnerHtmlFromJsp(MAIN_CONTENT_DIV_ID, ADD_EXTERNAL_USERS_JSP));
                     } else {
                         GuiResponseJs.retrieveGuiResponseJs().addAction(GuiScreenAction.newMessage(GuiMessageType.error, "External users cannot be added to this group."));
@@ -52,30 +53,39 @@ public class UiV2GroupExternalUsers {
 
 
     /**
-     * .
+     * Validates the form, saves the user, updates the group membership.
      *
-     * @param request
-     * @param response
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
      */
     public void addSubmit(final HttpServletRequest request, HttpServletResponse response) {
+        final EmailValidator emailValidator = EmailValidator.getInstance();
+
         withCurrentGroupAndSession(request, new CurrentGroupAndSessionCallback() {
 
             @Override
             public void doWithGroupAndSession(Group group, GrouperSession session) {
+                if (!ExternalUsersUtils.isActiveGroup(group.getName())) {
+                    GuiResponseJs.retrieveGuiResponseJs().addAction(GuiScreenAction.newMessage(GuiMessageType.error, "External users cannot be added to this group."));
+                    return;
+                }
+
                 StringBuilder sb = new StringBuilder();
 
                 String mail = request.getParameter("mail");
-                if (mail == null || mail.length() < 5) {
+                if (mail == null || mail.length() < 2) {
                     sb.append("<li>The e-mail address is required.</li>");
+                } else if (!emailValidator.isValid(mail)) {
+                    sb.append("<li>The e-mail address is not formatted properly.</li>");
                 }
 
                 String givenName = request.getParameter("givenName");
-                if (givenName == null || givenName.length() < 2) {
+                if (givenName == null || givenName.length() < 1) {
                     sb.append("<li>The first name is required.</li>");
                 }
 
                 String surname = request.getParameter("surname");
-                if (surname == null || surname.length() < 2) {
+                if (surname == null || surname.length() < 1) {
                     sb.append("<li>The last name is required.</li>");
                 }
 
@@ -145,26 +155,5 @@ public class UiV2GroupExternalUsers {
 
     private interface CurrentGroupAndSessionCallback {
         void doWithGroupAndSession(Group group, GrouperSession session);
-    }
-
-
-    private boolean isActiveGroup(String groupName) {
-        String targetStem = null;
-
-        int index = 0;
-
-        while (true) {
-            targetStem = GrouperConfig.retrieveConfig().propertyValueString("custom.externalUsers.stem." + index);
-
-            if (targetStem == null || targetStem.isEmpty() ) {
-                return false;
-            }
-
-            if (groupName.startsWith(targetStem)) {
-                return true;
-            }
-
-            index++;
-        }
     }
 }
