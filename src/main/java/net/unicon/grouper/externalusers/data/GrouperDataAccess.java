@@ -20,7 +20,7 @@ import java.util.List;
  *
  *  (please alter as needed)
  */
-public class DataAccess {
+public class GrouperDataAccess {
 
     /**
      * Checks to see if an external users already exists
@@ -92,6 +92,29 @@ public class DataAccess {
                 public Object callback(HibernateHandlerBean hibernateHandlerBean) {
                     List<Object> params = GrouperUtil.toList((Object)mail, givenName, surname, System.currentTimeMillis(), subjectId);
                     HibernateSession.bySqlStatic().executeSql("insert into custom_external_users (mail, givenName, surname, created_on, created_by) values (?, ?, ?, ?, ?)", params);
+                    return null;
+                }
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Remove a user
+     * @param mail
+     */
+    public static void removeExternalUser(final String mail) {
+        try {
+            HibernateSession.callbackHibernateSession(GrouperTransactionType.READ_WRITE_NEW, AuditControl.WILL_NOT_AUDIT, new HibernateHandler() {
+
+                /**
+                 * callback
+                 */
+                @Override
+                public Object callback(HibernateHandlerBean hibernateHandlerBean) {
+                    List<Object> params = GrouperUtil.toList((Object)mail);
+                    HibernateSession.bySqlStatic().executeSql("delete from custom_external_users where mail = ?", params);
                     return null;
                 }
             });

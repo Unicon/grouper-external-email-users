@@ -4,8 +4,10 @@ MAINTAINER jgasper@unicon.net
 
 COPY grouper.apiBinary/ /opt/grouper.apiBinary-2.3.0/
 COPY grouper.ui/ /opt/grouper.ui-2.3.0/
+COPY grouper.ui/java/lib/* /opt/grouper.apiBinary-2.3.0/lib/custom/
 COPY provisioningTargetAttributes.gsh /
 COPY externalUsers.sql /
+COPY protectedGroupNames.sql /
 
 RUN set -x; \
     cd /opt/grouper.ui-2.3.0 \
@@ -17,6 +19,7 @@ RUN set -x; \
     && service mysql start \
     && service slapd start \
     && mysql grouper < /externalUsers.sql \
+    && mysql grouper < /protectedGroupNames.sql \
     && bin/gsh /provisioningTargetAttributes.gsh \
     && rm /provisioningTargetAttributes.gsh
 

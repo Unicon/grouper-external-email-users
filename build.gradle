@@ -14,9 +14,7 @@ dependencies {
     }
     compile 'edu.internet2.middleware.grouper:subject:2.3.0'
     compile 'org.slf4j:slf4j-api:1.6.2'
-
-    //Needed for hooks to compile
-    compile 'org.hibernate:hibernate-core:3.6.0.Final'
+    compile 'org.hibernate:hibernate-core:5.0.4.Final'
 }
 
 

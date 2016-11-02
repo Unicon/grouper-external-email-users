@@ -11,7 +11,7 @@ import edu.internet2.middleware.grouper.ui.GrouperUiFilter;
 import edu.internet2.middleware.grouper.ui.util.GrouperUiUserData;
 import edu.internet2.middleware.grouper.userData.GrouperUserDataApi;
 import edu.internet2.middleware.subject.Subject;
-import net.unicon.grouper.externalusers.data.DataAccess;
+import net.unicon.grouper.externalusers.data.GrouperDataAccess;
 import net.unicon.grouper.externalusers.utils.ExternalUsersUtils;
 import org.apache.commons.validator.EmailValidator;
 
@@ -92,13 +92,13 @@ public class UiV2GroupExternalUsers {
                 final String validationErrors = sb.toString();
 
                 if (validationErrors.isEmpty()) {
-                    if (DataAccess.externalUserExists(mail)) {
-                        DataAccess.updateExternalUser(mail.trim(), givenName.trim(), surname.trim(), session.getSubject().getId());
+                    if (GrouperDataAccess.externalUserExists(mail)) {
+                        GrouperDataAccess.updateExternalUser(mail.trim(), givenName.trim(), surname.trim(), session.getSubject().getId());
                     } else {
-                        DataAccess.createExternalUser(mail.trim(), givenName.trim(), surname.trim(), session.getSubject().getId());
+                        GrouperDataAccess.createExternalUser(mail.trim(), givenName.trim(), surname.trim(), session.getSubject().getId());
                     }
 
-                    Subject externalSubject = SubjectFinder.findById(mail.trim());
+                    Subject externalSubject = SubjectFinder.findByIdAndSource(mail.trim(), ExternalUsersUtils.getExternalSourceId(), true);
                     group.addMember(externalSubject, false);
 
                     //go to the view group screen
@@ -116,7 +116,6 @@ public class UiV2GroupExternalUsers {
                 }
             }
         });
-
     }
 
     /* Context switching objects, etc */
