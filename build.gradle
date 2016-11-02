@@ -10,11 +10,16 @@ repositories {
 
 dependencies {
     compile ('edu.internet2.middleware.grouper:grouper:2.3.0') {
-      transitive = false
+        transitive = false
+    }
+    compile ('edu.internet2.middleware.grouper:grouper-ui:2.3.0') {
+        transitive = false
     }
     compile 'edu.internet2.middleware.grouper:subject:2.3.0'
     compile 'org.slf4j:slf4j-api:1.6.2'
     compile 'org.hibernate:hibernate-core:5.0.4.Final'
+    compile 'javax.servlet:javax.servlet-api:3.0.1'
+    compile 'commons-validator:commons-validator:1.1.3'
 }
 
 
@@ -27,25 +32,18 @@ task copyJspToDocker(type: Copy) {
     dependsOn copyDocker
 
     from 'src/main/webapp/'
-    into 'build/docker-compose/grouper/grouper.ui/webapp'
-}
-
-task copyJavaToDocker(type: Copy) {
-    dependsOn copyDocker
-
-    from 'src/main/server-side-compiled/java/'
-    into 'build/docker-compose/grouper/grouper.ui/java/src/'
+    into 'build/docker-compose/grouper/webapp'
 }
 
 task addLib(type: Copy) {
     dependsOn jar
 
     from 'build/libs/'
-    into 'build/docker-compose/grouper/grouper.ui/java/lib/'
+    into 'build/docker-compose/grouper/lib/'
 }
 
 task buildGrouper(type:Exec) {
-    dependsOn copyDocker, copyJspToDocker, copyJavaToDocker, addLib
+    dependsOn copyDocker, copyJspToDocker, addLib
 
     doFirst {
         logger.lifecycle("Building the initial images may take a long time. Have plenty of bandwidth.")
