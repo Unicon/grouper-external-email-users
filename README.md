@@ -36,9 +36,9 @@ CREATE TABLE custom_external_users (
 );
 ```
 
-The core code can be compiled by running `./gradlew jar`. The artifact library/jar will be found in `./build/libs/`. This jar needs to be placed in appropriate lib directory. For the daemon this will be `GROUPER_HOME/libs/custom`. For the the UI and WS, it is `TOMCAT_HOME/webapps/<app>/WEB-INF/lib/`. (It is anticipated that this will be applied to patched app directory.) 
+The core code can be compiled by running `./gradlew jar`. The artifact library/jar will be found in `./build/libs/`. This jar needs to be placed in appropriate lib directory. For the daemon this will be `GROUPER_HOME/lib/custom`. For the the UI and WS, it is `TOMCAT_HOME/webapps/<app>/WEB-INF/lib/`. (It is anticipated that this will be applied to patched app directory.) 
 
-`src/webapp/` contains a directory structure and two jsp files that need to be placed in the expanded Grouper UI webapp: `TOMCAT_HOME/webapps/grouper/WEB-INF/`.
+`src/main/webapp/WEB-INF/grouperUi2/group/` contains a directory structure and two jsp files that need to be placed in the expanded Grouper UI webapp: `TOMCAT_HOME/webapps/grouper/WEB-INF/grouperUi2/group/`.
 
 After updating the appropriate `sources.xml` and `grouper.properties`, and `grouper.hibernate.properties` files, a restart of the Daemon and Tomcat is needed for the changes to become effective.
 
