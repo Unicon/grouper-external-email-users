@@ -85,10 +85,10 @@ public class GenericDataAccess {
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 int numberOfRows = rs.getInt(1);
-                System.out.println("numberOfRows= " + numberOfRows);
+                logger.debug("numberOfRows= " + numberOfRows);
                 return numberOfRows;
             } else {
-                System.out.println("error: could not get the record counts");
+                logger.debug("error: could not get the record counts");
                 throw new RuntimeException("Problem with query: " + sql);
             }
 
