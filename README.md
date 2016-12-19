@@ -200,6 +200,7 @@ hooks.group.class:
 |custom.duplicateJdbcGroupId.query|(required)|A query ran to find conflictsing group ids with an external JDBC datasource; the proposed id is passed in and a count is expected in return; a sample query: select count(*) from protected_group_ids where ID = ?
 |custom.duplicateJdbcGroupName.query(required)|A query ran to find conflicting group names with an external JDBC datasource; the proposed id is passed in and a count is expected in return; a sample query:select count(*) from protected_group_names where name = ?|
 |custom.duplicateJdbcGroupId.errorMessage|The desired group id (%s) already exists in the database.|%s will be substituted for the conflicting name/id.|
+|custom.duplicateGrouperGroupId.errorMessage.containsSpaces|Spaces not allowed in Group ID.||
 |custom.duplicateJdbcGroupName.errorMessage|The desired group name (%s) already exists in the database.|%s will be substituted for the conflicting name/id.|
 |custom.duplicateGrouperGroupId.errorMessage|The desired group id (%s) already exists in Grouper as %s.|The first %s will be substituted for the conflicting name/id.The second %s will be the full conflicting Group Id.|
 |custom.duplicateGrouperGroupName.errorMessage|The desired group name (%s) already exists in Grouper as %s.|The first %s will be substituted for the conflicting name/id. The second %s will be the full conflicting Group Id.|
@@ -263,6 +264,7 @@ When testing is complete, `exit` to leave the running container. Then run `gradl
 
 The following test work against this container:
 
+1. Login with banderson/password.
 1. Go into a regular folder and group, try to select "Add external user" from the menu. An error message should be displayed.
 1. Go into `cu:app:maillist` or `cu:app:google` and create a group and add an external user. Filling in the fields should be successful. Leaving a field blank should cause a save error.
 1. Trying to create group with the name of `testing` or `tester` in the stems listed in #2 should fail. But doing so out sides of these stems should succeed.

@@ -44,6 +44,11 @@ public class DuplicateGroupIdCheck extends GroupHooks {
             return;
         }
 
+        if (group.getName().contains(" ")) {
+            throw new HookVeto("hook.veto.id.grouper.contains.spaces",
+                    String.format(GrouperConfig.retrieveConfig().getProperty("custom.duplicateGrouperGroupId.errorMessage.containsSpaces", "Spaces not allowed in Group ID.")));
+        }
+
         final String groupExtension = group.getExtension();
 
         //Hunt down anything that may have the id in it...
@@ -58,7 +63,8 @@ public class DuplicateGroupIdCheck extends GroupHooks {
                     &&  groupExtension.equalsIgnoreCase(testGroup.getExtension())
                     ) {
                 logger.info("Found duplicate id ({}) in grouper when adding '{}' ({})", new Object[] {testGroup.getName(), groupExtension, group.getName()});
-                throw new HookVeto("hook.veto.id.grouper.duplicate", String.format(GrouperConfig.retrieveConfig().getProperty("custom.duplicateGrouperGroupId.errorMessage", "The desired group id (%s) already exists in Grouper as %s."), groupExtension, testGroup.getName()));
+                throw new HookVeto("hook.veto.id.grouper.duplicate",
+                        String.format(GrouperConfig.retrieveConfig().getProperty("custom.duplicateGrouperGroupId.errorMessage", "The desired group id (%s) already exists in Grouper as %s."), groupExtension, testGroup.getName()));
 
             } else {
                 //This could happen when updating itself
