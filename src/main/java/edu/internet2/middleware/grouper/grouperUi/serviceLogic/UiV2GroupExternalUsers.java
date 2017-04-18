@@ -92,13 +92,13 @@ public class UiV2GroupExternalUsers {
                 final String validationErrors = sb.toString();
 
                 if (validationErrors.isEmpty()) {
-                    if (GrouperDataAccess.externalUserExists(mail)) {
+                    if (GrouperDataAccess.externalUserExists(mail.trim())) {
                         GrouperDataAccess.updateExternalUser(mail.trim(), givenName.trim(), surname.trim(), session.getSubject().getId());
                     } else {
                         GrouperDataAccess.createExternalUser(mail.trim(), givenName.trim(), surname.trim(), session.getSubject().getId());
                     }
 
-                    Subject externalSubject = SubjectFinder.findByIdAndSource(mail.trim(), ExternalUsersUtils.getExternalSourceId(), true);
+                    Subject externalSubject = SubjectFinder.findByIdAndSource(mail.trim().toLowerCase(), ExternalUsersUtils.getExternalSourceId(), true);
                     group.addMember(externalSubject, false);
 
                     //go to the view group screen

@@ -36,7 +36,7 @@ public class GrouperDataAccess {
                  */
                 @Override
                 public Object callback(HibernateHandlerBean hibernateHandlerBean) {
-                    List<Object> params = GrouperUtil.toList((Object) mail);
+                    List<Object> params = GrouperUtil.toList((Object) mail.toLowerCase());
                     int count = HibernateSession.bySqlStatic().select(int.class, "select count(mail) from custom_external_users where mail = ?", params);
                     return (count > 0);
                 }
@@ -64,7 +64,7 @@ public class GrouperDataAccess {
                  */
                 @Override
                 public Object callback(HibernateHandlerBean hibernateHandlerBean) {
-                    List<Object> params = GrouperUtil.toList((Object)givenName, surname, System.currentTimeMillis(), subjectId, mail);
+                    List<Object> params = GrouperUtil.toList((Object)givenName, surname, System.currentTimeMillis(), subjectId, mail.toLowerCase());
                     HibernateSession.bySqlStatic().executeSql("update custom_external_users set givenName = ?, surname = ?, updated_on = ?, updated_by = ? where mail = ?", params);
                     return null;
                 }
@@ -90,7 +90,7 @@ public class GrouperDataAccess {
                  */
                 @Override
                 public Object callback(HibernateHandlerBean hibernateHandlerBean) {
-                    List<Object> params = GrouperUtil.toList((Object)mail, givenName, surname, System.currentTimeMillis(), subjectId);
+                    List<Object> params = GrouperUtil.toList((Object)mail.toLowerCase(), givenName, surname, System.currentTimeMillis(), subjectId);
                     HibernateSession.bySqlStatic().executeSql("insert into custom_external_users (mail, givenName, surname, created_on, created_by) values (?, ?, ?, ?, ?)", params);
                     return null;
                 }
@@ -113,7 +113,7 @@ public class GrouperDataAccess {
                  */
                 @Override
                 public Object callback(HibernateHandlerBean hibernateHandlerBean) {
-                    List<Object> params = GrouperUtil.toList((Object)mail);
+                    List<Object> params = GrouperUtil.toList((Object)mail.toLowerCase());
                     HibernateSession.bySqlStatic().executeSql("delete from custom_external_users where mail = ?", params);
                     return null;
                 }
