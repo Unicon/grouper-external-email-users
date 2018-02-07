@@ -267,5 +267,5 @@ The following test work against this container:
 1. Login with banderson/password.
 1. Go into a regular folder and group, try to select "Add external user" from the menu. An error message should be displayed.
 1. Go into `cu:app:maillist` or `cu:app:google` and create a group and add an external user. Filling in the fields should be successful. Leaving a field blank should cause a save error.
-1. Trying to create group with the name of `testing` or `tester` in the stems listed in #2 should fail. But doing so out sides of these stems should succeed.
-1. Trying to create group with the name of `allUsers` in the stems listed in #2 should fail. But doing so out sides of these stems should succeed, unless done in the `loader` stem..
+1. Trying to create group with the name of `testing` or `tester` in the stems listed in #2 should fail. But doing so outside of these stems should succeed.
+1. Trying to create group with the name of `allUsers` in the stems listed in #2 should fail. But doing so outside of these stems should succeed, unless done in the `loader` stem.
